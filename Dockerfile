@@ -10,7 +10,7 @@ RUN yum install -y curl
 RUN mkdir /testfiles
 WORKDIR /testfiles
 
-ADD deploy-test.jar /testfiles/
+ADD ./target/deploy-test.jar /testfiles/
 RUN chmod 777 -Rf /testfiles
 
 #CMD ["/bin/java", "-jar","/testfiles/deploy-test.jar"]
