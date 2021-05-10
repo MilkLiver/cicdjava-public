@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy-test-springboot
+  labels:
+    name: deploy-test
+    app: springboot
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: deploy-test
+  
+  template:
+    metadata:
+      labels:
+        app: deploy-test
+    spec:
+#      serviceAccountName: uuu
+#      securityContext:
+#        runAsUser: 0
+#        runAsGroup: 0
+#        fsGroup: 0
+#        allowPrivilegeEscalation: true
+#        privileged: true
+      imagePullSecrets:
+        - name: docker-account01
+
+      containers:
+        - name: deploy-test-springboot
+          image: milkliver/deploy-test:v5.0.0
+          #image: centos:7
+          workingDir: /testfiles
+          command: ["/bin/java", "-jar","deploy-test.jar"]
+          #command: ["tail","-f","/dev/null"]
+          ports:
+          - name: deploy-test
+            containerPort: 9527
+            protocol: TCP
