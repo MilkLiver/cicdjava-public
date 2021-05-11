@@ -1,11 +1,11 @@
 ﻿apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: ingress-springboot
+  name: cicd-ingress-springboot
   #namespace: jenkins01
 spec:
   rules:
-    - host: ingress-springboot
+    - host: cicd-ingress-springboot
       http:
         paths:
           - path: /
