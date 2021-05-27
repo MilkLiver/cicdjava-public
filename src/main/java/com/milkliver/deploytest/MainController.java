@@ -18,12 +18,19 @@ public class MainController {
 
 	@Value("${version}")
 	String version;
+	
+	@ResponseBody
+	@GetMapping(value = { "/" })
+	public String home(Model model, HttpServletRequest request, HttpServletResponse response) {
+		log.info("test server " + version);
+		return "test server " + version;
+	}
 
 	@ResponseBody
 	@GetMapping(value = { "/kuro" })
 	public String kuro(Model model, HttpServletRequest request, HttpServletResponse response) {
-		log.info("keroro~keroro~");
-		return "keroro~keroro~";
+		log.info("kero~kero~");
+		return "kero~kero~";
 	}
 
 	@ResponseBody
