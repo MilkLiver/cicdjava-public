@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>com.milkliver</groupId>
 	<artifactId>deploy-test</artifactId>
-	<version>v5.0.17</version>
+	<version>v5.0.18</version>
 	<packaging>jar</packaging>
 	<name>deploy-test</name>
 	<description>Demo project for Spring Boot</description>
