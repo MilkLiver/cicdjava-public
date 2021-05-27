@@ -29,7 +29,7 @@ spec:
 
       containers:
         - name: deploy-test-springboot
-          image: 192.168.50.11/seyana/deploy-test:v5.0.36
+          image: <image>
           workingDir: /testfiles
           command: ["/bin/java", "-jar","deploy-test.jar"]
           #command: ["tail","-f","/dev/null"]
