@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>com.milkliver</groupId>
 	<artifactId>deploy-test</artifactId>
-	<version>v6.0.14</version>
+	<version>v6.0.15</version>
 	<packaging>jar</packaging>
 	<name>deploy-test</name>
 	<description>Demo project for Spring Boot</description>
@@ -21,7 +21,6 @@
     <distributionManagement>
         <repository>
          <id>nexus</id>
-		 <name>my test</name>
          <url>http://192.168.50.13:8081/repository/test</url>
 		 <layout>default</layout>
         </repository>
