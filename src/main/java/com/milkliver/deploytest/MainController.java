@@ -18,7 +18,29 @@ public class MainController {
 
 	@Value("${version}")
 	String version;
-	
+
+	@GetMapping(value = { "/instanatest" })
+	public String instanatest(Model model, HttpServletRequest request, HttpServletResponse response) {
+		log.info("test version: " + version + " ...");
+		log.info("test version: " + version + " finish");
+		return "test";
+	}
+
+	@GetMapping(value = { "/instanalongtest" })
+	public String instanalongtest(Model model, HttpServletRequest request, HttpServletResponse response) {
+		try {
+			log.info("longtest version: " + version + " ...");
+			Thread.sleep(30000);
+			log.info("longtest version: " + version + " finish");
+		} catch (InterruptedException e) {
+			log.error(e.getMessage());
+			for (StackTraceElement elem : e.getStackTrace()) {
+				log.error(elem.toString());
+			}
+		}
+		return "longtest";
+	}
+
 	@ResponseBody
 	@GetMapping(value = { "/" })
 	public String home(Model model, HttpServletRequest request, HttpServletResponse response) {
