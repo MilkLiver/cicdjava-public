@@ -50,7 +50,7 @@ public class MainController {
 		response.setStatus(401);
 
 		log.info("instana401test finish");
-		return "testjs";
+		return "test401";
 	}
 
 	@GetMapping(value = { "/instanalongtest" })
