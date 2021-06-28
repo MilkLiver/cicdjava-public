@@ -1,15 +1,23 @@
 package com.milkliver.deploytest;
 
+import java.util.Map;
+import java.util.Random;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import net.sf.json.JSONObject;
 
 @Controller
 public class MainController {
@@ -21,17 +29,48 @@ public class MainController {
 
 	@GetMapping(value = { "/instanatest" })
 	public String instanatest(Model model, HttpServletRequest request, HttpServletResponse response) {
-		log.info("test version: " + version + " ...");
-		log.info("test version: " + version + " finish");
+		log.info("instanatest ...");
+
+		log.info("instanatest finish");
 		return "test";
+	}
+
+	@GetMapping(value = { "/instanajstest" })
+	public String instanajstest(Model model, HttpServletRequest request, HttpServletResponse response) {
+		log.info("instanajstest ...");
+
+		log.info("instanajstest finish");
+		return "testjs";
+	}
+
+	@GetMapping(value = { "/instana401test" })
+	public String instana401test(Model model, HttpServletRequest request, HttpServletResponse response) {
+		log.info("instana401test ...");
+
+		response.setStatus(401);
+
+		log.info("instana401test finish");
+		return "testjs";
 	}
 
 	@GetMapping(value = { "/instanalongtest" })
 	public String instanalongtest(Model model, HttpServletRequest request, HttpServletResponse response) {
 		try {
-			log.info("longtest version: " + version + " ...");
-			Thread.sleep(30000);
-			log.info("longtest version: " + version + " finish");
+			log.info("instanalongtest ...");
+			float p = 0.5f;
+			Random random = new Random();
+
+			boolean randomResult = random.nextFloat() < p;
+
+			randomResult = true;
+
+			log.info("boolean: " + String.valueOf(randomResult));
+
+			if (randomResult) {
+				Thread.sleep(30000);
+			}
+
+			log.info("instanalongtest finish");
 		} catch (InterruptedException e) {
 			log.error(e.getMessage());
 			for (StackTraceElement elem : e.getStackTrace()) {
@@ -39,6 +78,35 @@ public class MainController {
 			}
 		}
 		return "longtest";
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/instanawebhook", method = { RequestMethod.GET, RequestMethod.POST })
+	public String instanawebhook(Model model, HttpServletRequest request, HttpServletResponse response) {
+		String line;
+		StringBuilder sb = new StringBuilder();
+		log.info("instanawebhook ...");
+		try {
+			while ((line = request.getReader().readLine()) != null) {
+				sb.append(line);
+			}
+
+			log.info(sb.toString());
+			// 將body裡的內容解析成JSON
+			JSONObject json = JSONObject.fromObject(sb.toString());
+			Map m = (Map) json;
+
+			Map issueMap = new HashedMap((Map) m.get("issue"));
+			log.info("msgid: " + String.valueOf(issueMap.get("text")));
+
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			for (StackTraceElement elem : e.getStackTrace()) {
+				log.error(elem.toString());
+			}
+		}
+		log.info("instanawebhook finish");
+		return sb.toString();
 	}
 
 	@ResponseBody
