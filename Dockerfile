@@ -4,6 +4,8 @@ MAINTAINER milkliver
 #ARG gid=0
 #USER 0
 
+VOLUME /sys/fs/cgroup
+
 RUN yum install -y java
 RUN yum install -y curl
 
