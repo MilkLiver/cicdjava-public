@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "deploy-test01.fullname" . }}
+  name: {{ include "deploy-test.fullname" . }}
   labels:
-    {{- include "deploy-test01.labels" . | nindent 4 }}
+    {{- include "deploy-test.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -12,4 +12,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "deploy-test01.selectorLabels" . | nindent 4 }}
+    {{- include "deploy-test.selectorLabels" . | nindent 4 }}
