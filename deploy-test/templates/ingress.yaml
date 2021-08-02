@@ -1,4 +1,4 @@
-{{- if .Values.ingress.enabled -}}
+{{- if and .Values.ingress.enabled (or .Values.ingress.selfHostsEnabled .Values.ingress.customHostsEnabled) -}}
 {{- $fullName := include "deploy-test.fullname" . -}}
 {{- $svcPort := .Values.service.port -}}
 {{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
@@ -27,6 +27,17 @@ spec:
     {{- end }}
   {{- end }}
   rules:
+    {{- if .Values.ingress.selfHostsEnabled }}
+    - host: cicd-ingress.deploy-test03
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: {{ $svcPort }}
+    {{- end }}
+         
+    {{- if .Values.ingress.customHostsEnabled }}
     {{- range .Values.ingress.hosts }}
     - host: {{ .host | quote }}
       http:
@@ -34,8 +45,11 @@ spec:
           {{- range .paths }}
           - path: {{ .path }}
             backend:
-              serviceName: {{ $fullName }}
-              servicePort: {{ $svcPort }}
+              serviceName: {{ .backend.serviceName }}
+              servicePort: {{ .backend.servicePort }}
+              #serviceName: {{ $fullName }}
+              #servicePort: {{ $svcPort }}
           {{- end }}
     {{- end }}
-  {{- end }}
+    {{- end }}
+{{- end }}
