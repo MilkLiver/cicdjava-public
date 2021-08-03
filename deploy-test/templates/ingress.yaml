@@ -28,7 +28,7 @@ spec:
   {{- end }}
   rules:
     {{- if .Values.ingress.selfHostsEnabled }}
-    - host: cicd-ingress.deploy-test03
+    - host: {{ .Values.ingress.hostname | default (printf "%s.%s.%s" (.Values.subdomain | default "argocd-ingress" ) .Release.Namespace (include "deploy-test.fullname" .)) }}
       http:
         paths:
           - path: /
