@@ -55,7 +55,7 @@ service:
 ingress:
   enabled: true
   selfHostsEnabled: true
-  customHostsEnabled: true
+  customHostsEnabled: false
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
