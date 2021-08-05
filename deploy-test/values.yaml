@@ -30,6 +30,8 @@ imageCredentials:
   #email: neil.yu@dynasafe.com.tw
 
 serverConfig:
+  - version=v6.2.25
+  - environment=TEST
   - server.address=0.0.0.0
   - server.port=9527
   - spring.thymeleaf.cache=false
