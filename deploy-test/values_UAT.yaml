@@ -30,10 +30,9 @@ imageCredentials:
   #email: neil.yu@dynasafe.com.tw
 
 serverConfig:
+  - spring.profiles.active=UAT
   - server.address=0.0.0.0
   - server.port=9527
-  - version=@project.version@
-  - environment=UAT
   - spring.thymeleaf.cache=false
   - spring.thymeleaf.enabled=true
   - spring.thymeleaf.prefix=classpath:/templates/

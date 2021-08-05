@@ -32,8 +32,6 @@ imageCredentials:
 serverConfig:
   - server.address=0.0.0.0
   - server.port=9527
-  - version=@project.version@
-  - environment=DEV
   - spring.thymeleaf.cache=false
   - spring.thymeleaf.enabled=true
   - spring.thymeleaf.prefix=classpath:/templates/
