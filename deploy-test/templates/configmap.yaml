@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "deploy-test.fullname" . }}
+data:
+  application.properties: |
+    {{- range .Values.serverConfig }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+

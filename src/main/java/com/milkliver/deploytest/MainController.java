@@ -27,6 +27,9 @@ public class MainController {
 	@Value("${version}")
 	String version;
 
+	@Value("${environment}")
+	String environment;
+
 	@GetMapping(value = { "/instanatest" })
 	public String instanatest(Model model, HttpServletRequest request, HttpServletResponse response) {
 		log.info("instanatest ...");
@@ -112,8 +115,8 @@ public class MainController {
 	@ResponseBody
 	@GetMapping(value = { "/" })
 	public String home(Model model, HttpServletRequest request, HttpServletResponse response) {
-		log.info("test server " + version);
-		return "test server " + version;
+		log.info("test server: " + version + " environment: " + environment);
+		return "test server: " + version + " environment: " + environment;
 	}
 
 	@ResponseBody
@@ -126,8 +129,8 @@ public class MainController {
 	@ResponseBody
 	@GetMapping(value = { "/test" })
 	public String test(Model model, HttpServletRequest request, HttpServletResponse response) {
-		log.info("test version: " + version);
-		return "test version: " + version;
+		log.info("test version: " + version + " environment: " + environment);
+		return "test version: " + version + " environment: " + environment;
 	}
 
 	@ResponseBody

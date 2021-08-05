@@ -10,9 +10,15 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
   workingDir: /testfiles
-  command: ["/bin/java", "-jar","deploy-test.jar"]
+  command:
+    [
+      "/bin/java",
+      "-jar",
+      "-Dspring.config.location=/configs/application.properties",
+      "deploy-test.jar",
+    ]
 
-imagePullSecrets: 
+imagePullSecrets:
   - name: "harbor-secret"
 nameOverride: ""
 fullnameOverride: ""
@@ -22,6 +28,22 @@ imageCredentials:
   username: seyana
   password: Seyana0831
   #email: neil.yu@dynasafe.com.tw
+
+serverConfig:
+  - server.address=0.0.0.0
+  - server.port=9527
+  - version=@project.version@
+  - environment=DEV
+  - spring.thymeleaf.cache=false
+  - spring.thymeleaf.enabled=true
+  - spring.thymeleaf.prefix=classpath:/templates/
+  - spring.thymeleaf.suffix=.html
+  - spring.jmx.enabled=true
+  - management.endpoints.enabled-by-default=false
+  - management.endpoint.info.enabled=true
+  - management.endpoint.health.enabled=true
+  - management.endpoint.metrics.enabled=true
+  - management.endpoint.env.enabled=true
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -37,10 +59,12 @@ deployment:
 
 podAnnotations: {}
 
-podSecurityContext: {}
+podSecurityContext:
+  {}
   # fsGroup: 2000
 
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -62,22 +86,24 @@ ingress:
   # hostname: cicd-ingress.deploy-test
 
   # customHosts setting
-  annotations: {}
+  annotations:
+    {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: cicd-ingress.deploy-test02  
+    - host: cicd-ingress.deploy-test02
       paths:
-      - path: /
-        backend:
-          serviceName: test-deploy-test
-          servicePort: 9527
+        - path: /
+          backend:
+            serviceName: test-deploy-test
+            servicePort: 9527
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
 
-resources: {}
+resources:
+  {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following

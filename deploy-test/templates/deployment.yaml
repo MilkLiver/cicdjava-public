@@ -53,6 +53,18 @@ spec:
           #    port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: java-properties
+              mountPath: /configs
+
+      volumes:
+        - name: java-properties
+          configMap:
+            name: {{ include "deploy-test.fullname" . }}
+            items:
+              - key: application.properties
+                path: application.properties 
+
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -65,3 +77,4 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+
