@@ -5,7 +5,7 @@ metadata:
   name: {{ include "deploy-test.fullname" . }}
 data:
   application.properties: |
-    version=v6.2.25
+    version=@project.version@
     environment=TEST
     server.address=0.0.0.0
     server.port=9527
