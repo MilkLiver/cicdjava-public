@@ -1,12 +1,12 @@
-{{- if eq .Values.environment "test" }}
+{{- if eq .Values.environment "prd" }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "deploy-test.fullname" . }}
+  name: {{ include "deploy-test.fullname" . }}-prd
 data:
   application.properties: |
-    version=v6.2.25
-    environment=TEST
+    version=v6.2.27
+    environment=PRD
     server.address=0.0.0.0
     server.port=9527
     spring.thymeleaf.cache=false

@@ -60,7 +60,7 @@ spec:
       volumes:
         - name: java-properties
           configMap:
-            name: {{ include "deploy-test.fullname" . }}
+            name: {{ include "deploy-test.fullname" . }}-{{ .Values.environment }}
             items:
               - key: application.properties
                 path: application.properties 
