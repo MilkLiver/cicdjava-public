@@ -7,7 +7,8 @@ data:
   application.properties: |
   {{- range $key, $value := .Values.serverProperties }}
     {{ $key }}={{ $value }}
-    environment=dev
+  {{- end }}
+    environment=DEV
     server.address=0.0.0.0
     server.port=9527
     spring.thymeleaf.cache=false
@@ -20,5 +21,4 @@ data:
     management.endpoint.health.enabled=true
     management.endpoint.metrics.enabled=true
     management.endpoint.env.enabled=true
-  {{- end }}
 {{- end }}
