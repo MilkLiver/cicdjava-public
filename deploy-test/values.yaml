@@ -32,7 +32,7 @@ imageCredentials:
 environment: test
 
 serverProperties:
-  version: v6.2.30
+  version: v6.2.31
 
 
 serviceAccount:

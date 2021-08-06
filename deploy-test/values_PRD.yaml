@@ -31,8 +31,8 @@ imageCredentials:
 
 environment: prd
 
-serverProperties:
-  version: v6.2.29-prd
+# serverProperties:
+#   version: v6.2.29-prd
 
 
 serviceAccount:
