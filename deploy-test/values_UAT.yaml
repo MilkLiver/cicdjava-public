@@ -31,8 +31,8 @@ imageCredentials:
 
 environment: uat
 
-# serverProperties:
-#   version: v6.2.29
+serverProperties:
+  version: v6.2.29-uat
 
 
 serviceAccount:

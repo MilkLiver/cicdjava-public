@@ -31,8 +31,8 @@ imageCredentials:
 
 environment: dev
 
-# serverProperties:
-#   version: v6.2.29
+serverProperties:
+  version: v6.2.29-dev
 
 
 serviceAccount:
