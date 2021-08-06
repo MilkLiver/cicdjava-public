@@ -31,6 +31,10 @@ imageCredentials:
 
 environment: dev
 
+# serverProperties:
+#   version: v6.2.29
+
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true

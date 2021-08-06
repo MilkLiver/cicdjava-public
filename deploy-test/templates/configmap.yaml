@@ -2,10 +2,11 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "deploy-test.fullname" . }}
+  name: {{ include "deploy-test.fullname" . }}-test
 data:
   application.properties: |
-    version=@project.version@
+  {{- range $key, $value := .Values.serverProperties }}
+    {{ $key }}={{ $value }}
     environment=TEST
     server.address=0.0.0.0
     server.port=9527
@@ -19,5 +20,5 @@ data:
     management.endpoint.health.enabled=true
     management.endpoint.metrics.enabled=true
     management.endpoint.env.enabled=true
-
+  {{- end }}
 {{- end }}
