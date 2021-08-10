@@ -24,10 +24,10 @@ public class MainController {
 
 	private static final Logger log = LoggerFactory.getLogger(MainController.class);
 
-//	@Value("${version}")
-//	String version;
-	
-	static String version="v6.2.41";
+	// @Value("${version}")
+	// String version;
+
+	static String version = "v6.2.43";
 
 	@Value("${environment}")
 	String environment;
