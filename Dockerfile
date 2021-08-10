@@ -1,4 +1,4 @@
-FROM centos:7
+FROM docker.io/centos:7
 MAINTAINER milkliver
 #ARG uid=0
 #ARG gid=0
