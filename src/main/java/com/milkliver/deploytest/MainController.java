@@ -27,7 +27,7 @@ public class MainController {
 	// @Value("${version}")
 	// String version;
 
-	static String version = "v6.3.9";
+	static String version = "v6.4.0";
 
 	@Value("${environment}")
 	String environment;
