@@ -16,7 +16,7 @@ ADD ./target/deploy-test.jar /testfiles/
 RUN chmod 777 -Rf /testfiles
 
 RUN mkdir /configs
-ADD ./main/resources/application.properties /configs/application.properties
+ADD ./src/main/resources/application.properties /configs/application.properties
 RUN chmod 777 -Rf /configs/application.properties
 
 CMD ["/bin/java", "-jar", "-Dspring.config.location=/configs/application.properties", "/testfiles/deploy-test.jar"]
