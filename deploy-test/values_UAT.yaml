@@ -31,9 +31,11 @@ imageCredentials:
 
 environment: uat
 
-# serverProperties:
+serverProperties:
+  connection.target: http://10.255.78.57:3000/id/OMS_TEST/test
+  connection.Probability: 20
+  connection.enabled: false
 #   version: v6.2.29-uat
-
 
 serviceAccount:
   # Specifies whether a service account should be created

@@ -12,29 +12,29 @@ spec:
   selector:
     matchLabels:
       app: deploy-test
-  
+
   template:
     metadata:
       labels:
         app: deploy-test
     spec:
-#      serviceAccountName: AA
-#      securityContext:
-#        runAsUser: 0
-#        runAsGroup: 0
-#        fsGroup: 0
-#        allowPrivilegeEscalation: true
-#        privileged: true
+      #      serviceAccountName: AA
+      #      securityContext:
+      #        runAsUser: 0
+      #        runAsGroup: 0
+      #        fsGroup: 0
+      #        allowPrivilegeEscalation: true
+      #        privileged: true
       imagePullSecrets:
-        - name: docker-account01
+        - name: harbor-secret
 
       containers:
         - name: deploy-test-springboot
-          image: <image>
+          image: 192.168.50.11/seyana/deploy-test
           workingDir: /testfiles
-          command: ["/bin/java", "-jar","deploy-test.jar"]
+          command: ["/bin/java", "-jar", "deploy-test.jar"]
           #command: ["tail","-f","/dev/null"]
           ports:
-          - name: deploy-test
-            containerPort: 9527
-            protocol: TCP
+            - name: deploy-test
+              containerPort: 9527
+              protocol: TCP

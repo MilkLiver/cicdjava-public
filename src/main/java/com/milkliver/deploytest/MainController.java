@@ -1,8 +1,10 @@
 package com.milkliver.deploytest;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Random;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -27,10 +30,38 @@ public class MainController {
 	// @Value("${version}")
 	// String version;
 
-	static String version = "v6.4.2";
+	static String version = "v6.5.0";
+
+	static Map statusProbability = new HashedMap();
 
 	@Value("${environment}")
 	String environment;
+
+	public int randomHttpStatusCode() {
+		Random random = new Random();
+		float randomFloat = random.nextFloat();
+
+		// HTTP 500
+		if (randomFloat >= 0 && randomFloat < 0.05) {
+			return 500;
+		}
+		// HTTP 400
+		else if (randomFloat >= 0.05 && randomFloat < 0.15) {
+			return 400;
+		}
+		// HTTP 300
+		else if (randomFloat >= 0.15 && randomFloat < 0.3) {
+			return 300;
+		}
+		// HTTP 100
+		// else if (randomFloat >= 0.3 && randomFloat < 0.5) {
+		// return 100;
+		// }
+		// HTTP 200
+		else {
+			return 200;
+		}
+	}
 
 	@GetMapping(value = { "/instanatest" })
 	public String instanatest(Model model, HttpServletRequest request, HttpServletResponse response) {
@@ -149,6 +180,77 @@ public class MainController {
 			}
 		}
 		return "longtest version: " + version;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/webhook", method = { RequestMethod.GET, RequestMethod.POST })
+	public String getWebhook(HttpServletRequest request, HttpServletResponse response) {
+
+		log.info(request.getServletPath().toString() + " ...");
+
+		Random random = new Random();
+
+		String line;
+		StringBuilder sb = new StringBuilder();
+		try {
+			while ((line = request.getReader().readLine()) != null) {
+				sb.append(line);
+			}
+
+			if (sb.toString().replace(" ", "").equals("")) {
+				log.error(request.getServletPath().toString() + " not content");
+				return "meow?";
+			}
+			log.info(sb.toString());
+
+			log.info(request.getServletPath().toString() + " finish");
+
+		} catch (IOException e) {
+			log.error(e.getMessage());
+			for (StackTraceElement elem : e.getStackTrace()) {
+				log.error(elem.toString());
+			}
+			log.info(request.getServletPath().toString() + " Error");
+		}
+
+		return "receive webhook: " + sb.toString();
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/randomResponse", method = { RequestMethod.GET, RequestMethod.POST })
+	public String randomResponse(HttpServletRequest request, HttpServletResponse response) {
+
+		log.info(request.getServletPath().toString() + " ...");
+
+		int httpStatusCode = randomHttpStatusCode();
+
+		response.setStatus(httpStatusCode);
+		log.info("http status code: " + String.valueOf(httpStatusCode));
+
+		String line;
+		StringBuilder sb = new StringBuilder();
+		try {
+			while ((line = request.getReader().readLine()) != null) {
+				sb.append(line);
+			}
+
+			if (sb.toString().replace(" ", "").equals("")) {
+				log.error(request.getServletPath().toString() + " not content");
+				return "meow?";
+			}
+			log.info(sb.toString());
+
+			log.info(request.getServletPath().toString() + " finish");
+
+		} catch (IOException e) {
+			log.error(e.getMessage());
+			for (StackTraceElement elem : e.getStackTrace()) {
+				log.error(elem.toString());
+			}
+			log.info(request.getServletPath().toString() + " Error");
+		}
+
+		return "randomResponse receive webhook: " + sb.toString();
 	}
 
 }

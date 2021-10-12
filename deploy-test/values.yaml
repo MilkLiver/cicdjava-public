@@ -32,8 +32,10 @@ imageCredentials:
 environment: test
 
 serverProperties:
+  connection.target: http://10.255.78.57:3000/id/OMS_TEST/test
+  connection.Probability: 20
+  connection.enabled: false
   # version: v6.2.31
-
 
 serviceAccount:
   # Specifies whether a service account should be created
