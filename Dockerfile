@@ -1,23 +1,21 @@
-FROM docker.io/centos:7
+FROM docker.io/milkliver/javamvnbuilder
 MAINTAINER milkliver
 #ARG uid=0
 #ARG gid=0
-#USER 0
 
 VOLUME /sys/fs/cgroup
 
-RUN yum install -y java
-RUN yum install -y curl
+RUN mkdir /tmp/src
+COPY ./ /tmp/src/
+RUN chown -R 1001:1001 /tmp/src
 
-RUN mkdir /testfiles
-WORKDIR /testfiles
+USER 1001
 
-ADD ./target/deploy-test.jar /testfiles/
-RUN chmod 777 -Rf /testfiles
+WORKDIR /opt/app-root/run
 
-RUN mkdir /configs
-ADD ./src/main/resources/application.properties /configs/application.properties
-RUN chmod 777 -Rf /configs/application.properties
-
-CMD ["/bin/java","-jar","-Dspring.config.location=/configs/application.properties","/testfiles/deploy-test.jar"]
-#CMD ["tail","-f","/dev/null"]
+# Assemble script sourced from builder image based on user input or image metadata.
+# If this file does not exist in the image, the build will fail.
+RUN ["/opt/app-root/run/assemble"]
+# Run script sourced from builder image based on user input or image metadata.
+# If this file does not exist in the image, the build will fail.
+CMD ["/opt/app-root/run/run"]
