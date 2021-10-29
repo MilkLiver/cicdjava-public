@@ -21,4 +21,8 @@ data:
     management.endpoint.health.enabled=true
     management.endpoint.metrics.enabled=true
     management.endpoint.env.enabled=true
+    management.endpoints.web.exposure.include=*
+    management.endpoint.health.show-details=always
+    management.metrics.enable.all=false
+    management.endpoint.prometheus.enabled=true
 {{- end }}

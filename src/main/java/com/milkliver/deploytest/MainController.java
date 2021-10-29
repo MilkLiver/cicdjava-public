@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import io.prometheus.client.CollectorRegistry;
+import io.prometheus.client.Counter;
 import net.sf.json.JSONObject;
 
 @Controller
@@ -30,12 +32,19 @@ public class MainController {
 	// @Value("${version}")
 	// String version;
 
-	static String version = "v6.6.2";
+	private Counter requestCount;
+
+	static String version = "v6.7.0";
 
 	static Map statusProbability = new HashedMap();
 
 	@Value("${environment}")
 	String environment;
+
+	public MainController(CollectorRegistry collectorRegistry) {
+		requestCount = Counter.build().name("request_count").help("Number of requests.").labelNames("request_name")
+				.register(collectorRegistry);
+	}
 
 	public int randomHttpStatusCode() {
 		Random random = new Random();
@@ -61,6 +70,25 @@ public class MainController {
 		else {
 			return 200;
 		}
+	}
+
+	@ResponseBody
+	@GetMapping(value = { "/nyahello" })
+	public String nyahello(Model model, HttpServletRequest request, HttpServletResponse response) {
+		log.info("nyahello ...");
+		requestCount.labels("nyahello").inc();
+		log.info("nyahello finish");
+		return "nya hello ~~";
+	}
+
+	@ResponseBody
+	@GetMapping(value = { "/nyahelloReset" })
+	public String nyahelloReset(Model model, HttpServletRequest request, HttpServletResponse response) {
+		log.info("nyahello reset ...");
+//		requestCount.clear();
+		requestCount.remove("nyahello");
+		log.info("nyahello reset finish");
+		return "nya hello reset ~~";
 	}
 
 	@GetMapping(value = { "/instanatest" })
@@ -217,6 +245,15 @@ public class MainController {
 	}
 
 	@ResponseBody
+	@GetMapping(value = { "/randomResponseReset" })
+	public String randomResponseReset(Model model, HttpServletRequest request, HttpServletResponse response) {
+		log.info("randomResponse reset ...");
+		requestCount.remove("randomResponse");
+		log.info("randomResponse reset finish");
+		return "randomResponse reset finish";
+	}
+
+	@ResponseBody
 	@RequestMapping(value = "/randomResponse", method = { RequestMethod.GET, RequestMethod.POST })
 	public String randomResponse(HttpServletRequest request, HttpServletResponse response) {
 
@@ -226,6 +263,8 @@ public class MainController {
 
 		response.setStatus(httpStatusCode);
 		log.info("http status code: " + String.valueOf(httpStatusCode));
+
+		requestCount.labels("randomResponse").inc();
 
 		String line;
 		StringBuilder sb = new StringBuilder();
