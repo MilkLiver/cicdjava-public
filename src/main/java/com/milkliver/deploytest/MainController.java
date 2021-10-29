@@ -34,7 +34,7 @@ public class MainController {
 
 	private Counter requestCount;
 
-	static String version = "v6.7.0";
+	static String version = "v6.7.1";
 
 	static Map statusProbability = new HashedMap();
 
@@ -85,7 +85,7 @@ public class MainController {
 	@GetMapping(value = { "/nyahelloReset" })
 	public String nyahelloReset(Model model, HttpServletRequest request, HttpServletResponse response) {
 		log.info("nyahello reset ...");
-//		requestCount.clear();
+		// requestCount.clear();
 		requestCount.remove("nyahello");
 		log.info("nyahello reset finish");
 		return "nya hello reset ~~";
