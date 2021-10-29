@@ -30,7 +30,7 @@ public class MainController {
 	// @Value("${version}")
 	// String version;
 
-	static String version = "v6.6.1";
+	static String version = "v6.6.2";
 
 	static Map statusProbability = new HashedMap();
 
