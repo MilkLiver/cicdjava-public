@@ -34,7 +34,7 @@ public class MainController {
 
 	private Counter requestCount;
 
-	static String version = "v6.9.0";
+	static String version = "v6.9.1";
 
 	static Map statusProbability = new HashedMap();
 
