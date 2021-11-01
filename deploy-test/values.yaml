@@ -19,14 +19,17 @@ image:
     ]
 
 imagePullSecrets:
-  - name: "harbor-secret"
+  harborsecret:
+    create: true
+  test-secret:
 nameOverride: ""
 fullnameOverride: ""
 
 imageCredentials:
-  registry: 192.168.50.11
-  username: seyana
-  password: Seyana0831
+  harborsecret:
+    registry: 192.168.50.11
+    username: seyana
+    password: Seyana0831
   #email: neil.yu@dynasafe.com.tw
 
 environment: test

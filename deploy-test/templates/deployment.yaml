@@ -21,9 +21,11 @@ spec:
       labels:
         {{- include "deploy-test.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.imagePullSecrets }}
+      {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
+      {{- range $key, $val := .Values.imagePullSecrets }}
+        - name: {{ $key }}
+      {{- end }}
       {{- end }}
       serviceAccountName: {{ include "deploy-test.serviceAccountName" . }}
       securityContext:
