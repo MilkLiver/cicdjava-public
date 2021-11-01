@@ -10,7 +10,8 @@ data:
   {{- end }}
     environment=TEST
     server.address=0.0.0.0
-    server.port=9527
+    server.port=9528
+    server.http.port=9527
     spring.thymeleaf.cache=false
     spring.thymeleaf.enabled=true
     spring.thymeleaf.prefix=classpath:/templates/
