@@ -25,4 +25,8 @@ data:
     management.endpoint.health.show-details=always
     management.metrics.enable.all=false
     management.endpoint.prometheus.enabled=true
+    server.ssl.enabled=true
+    server.ssl.key-store-type=PKCS12
+    server.ssl.key-store=classpath:keystore/testapp01.cnsdomain.com.p12
+    server.ssl.key-store-password=changeit
 {{- end }}
