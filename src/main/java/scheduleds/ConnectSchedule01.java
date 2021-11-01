@@ -47,7 +47,7 @@ public class ConnectSchedule01 {
 				log.info("randomFloatResult: " + String.valueOf(randomFloatResult) + " randomResult: " + randomResult);
 
 				if (randomResult) {
-					ConnectTestFunctions.http(connectionTarget, "GET", 10, 10);
+					ConnectTestFunctions.http(connectionTarget, "GET", 5000, 5000);
 //					ConnectTestFunctions.http(connectionTarget + count, "GET", 10, 10);
 //					count++;
 				}
