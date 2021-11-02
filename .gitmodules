@@ -1,0 +1,3 @@
+[submodule "deploy-test"]
+	path = deploy-test
+	url = git@gitlab.cnsdomain.com:neil.yu/cicdjava-deploy.git
