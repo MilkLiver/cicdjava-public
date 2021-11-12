@@ -1,6 +1,7 @@
 package com.milkliver.deploytest;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.Map;
 import java.util.Random;
 
@@ -34,7 +35,7 @@ public class MainController {
 
 	private Counter requestCount;
 
-	static String version = "v6.9.18";
+	static String version = "v6.9.19";
 
 	static Map statusProbability = new HashedMap();
 
@@ -70,6 +71,25 @@ public class MainController {
 		else {
 			return 200;
 		}
+	}
+
+	@ResponseBody
+	@PostMapping(value = { "/mutate" }, produces = "application/json")
+	public String mutate(Model model, HttpServletRequest request, HttpServletResponse response) {
+		log.info("mutate ...");
+
+		String encodedString = Base64.getEncoder().encodeToString(
+				"[{ \"op\": \"add\", \"path\": \"/metadata/labels/foo\", \"value\": \"bar\" }]".getBytes());
+
+		JSONObject mutateReturnJson = new JSONObject();
+		JSONObject responseJson = new JSONObject();
+		responseJson.put("allowed", true);
+		responseJson.put("patch", encodedString);
+		responseJson.put("patchType", "JSONPatch");
+		mutateReturnJson.put("response", responseJson);
+
+		log.info("mutate finish");
+		return mutateReturnJson.toString();
 	}
 
 	@ResponseBody
