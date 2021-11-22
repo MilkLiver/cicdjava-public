@@ -35,7 +35,12 @@ public class MainController {
 
 	private Counter requestCount;
 
-	static String version = "v6.9.23";
+	static String version = "v6.10.0";
+
+//	static String mutateStr = "[{ \"op\": \"add\", \"path\": \"/metadata/labels/foo\", \"value\": \"bar\" }]";
+
+	@Value("${mutate.command}")
+	String mutateCommand;
 
 	static Map statusProbability = new HashedMap();
 
@@ -78,8 +83,7 @@ public class MainController {
 	public String mutate(Model model, HttpServletRequest request, HttpServletResponse response) {
 		log.info("mutate ...");
 
-		String encodedString = Base64.getEncoder().encodeToString(
-				"[{ \"op\": \"add\", \"path\": \"/metadata/labels/foo\", \"value\": \"bar\" }]".getBytes());
+		String encodedString = Base64.getEncoder().encodeToString(mutateCommand.getBytes());
 
 		JSONObject mutateReturnJson = new JSONObject();
 		JSONObject responseJson = new JSONObject();
