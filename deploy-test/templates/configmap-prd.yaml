@@ -12,7 +12,7 @@ data:
     server.address=0.0.0.0
     server.port=9528
     server.http.port=9527
-    mutate.command=[{ \"op\": \"add\", \"path\": \"/metadata/labels/foo\", \"value\": \"bar\" }]
+    mutate.command=[{"op": "add","path": "/spec/containers/-","value": {"image": "gcr.io/google-samples/hello-app:1.0","imagePullPolicy": "Always","name": "test-sidecar"}}]
     spring.thymeleaf.cache=false
     spring.thymeleaf.enabled=true
     spring.thymeleaf.prefix=classpath:/templates/
