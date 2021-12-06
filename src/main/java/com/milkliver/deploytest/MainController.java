@@ -33,8 +33,8 @@ public class MainController {
 	// @Value("${version}")
 	// String version;
 
-	static final String showPage="before";
-//	static final String showPage = "after";
+//	static final String showPage="before";
+	static final String showPage = "after";
 
 	private Counter requestCount;
 
