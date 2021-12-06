@@ -33,9 +33,12 @@ public class MainController {
 	// @Value("${version}")
 	// String version;
 
+	static final String showPage="before";
+//	static final String showPage = "after";
+
 	private Counter requestCount;
 
-	static String version = "v6.11.10";
+	static String version = "test version";
 
 //	static String mutateStr = "[{ \"op\": \"add\", \"path\": \"/metadata/labels/foo\", \"value\": \"bar\" }]";
 
@@ -197,9 +200,16 @@ public class MainController {
 		return sb.toString();
 	}
 
-	@ResponseBody
+//	@ResponseBody
 	@GetMapping(value = { "/" })
 	public String home(Model model, HttpServletRequest request, HttpServletResponse response) {
+		log.info("test server: " + version + " environment: " + environment);
+		return showPage;
+	}
+
+	@ResponseBody
+	@GetMapping(value = { "/version" })
+	public String version(Model model, HttpServletRequest request, HttpServletResponse response) {
 		log.info("test server: " + version + " environment: " + environment);
 		return "test server: " + version + " environment: " + environment;
 	}
