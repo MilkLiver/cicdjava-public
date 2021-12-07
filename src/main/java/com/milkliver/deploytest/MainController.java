@@ -33,12 +33,12 @@ public class MainController {
 	// @Value("${version}")
 	// String version;
 
-	static final String showPage = "before";
-//	static final String showPage = "after";
+//	static final String showPage = "before";
+	static final String showPage = "after";
 
 	private Counter requestCount;
 
-	static String version = "v6.12.4";
+	static String version = "v6.12.5";
 
 //	static String mutateStr = "[{ \"op\": \"add\", \"path\": \"/metadata/labels/foo\", \"value\": \"bar\" }]";
 
