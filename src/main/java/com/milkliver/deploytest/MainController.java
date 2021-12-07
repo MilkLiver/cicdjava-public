@@ -33,12 +33,12 @@ public class MainController {
 	// @Value("${version}")
 	// String version;
 
-	static final String showPage="before";
+	static final String showPage = "before";
 //	static final String showPage = "after";
 
 	private Counter requestCount;
 
-	static String version = "test version";
+	static String version = "v6.12.3";
 
 //	static String mutateStr = "[{ \"op\": \"add\", \"path\": \"/metadata/labels/foo\", \"value\": \"bar\" }]";
 
@@ -203,6 +203,8 @@ public class MainController {
 //	@ResponseBody
 	@GetMapping(value = { "/" })
 	public String home(Model model, HttpServletRequest request, HttpServletResponse response) {
+		model.addAttribute("environment", environment);
+		model.addAttribute("version", version);
 		log.info("test server: " + version + " environment: " + environment);
 		return showPage;
 	}
