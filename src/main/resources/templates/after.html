@@ -2,12 +2,25 @@
 <html>
 <head>
 <meta charset="BIG5">
-<title>Before</title>
+<script>
+  (function(s,t,a,n){s[t]||(s[t]=a,n=s[a]=function(){n.q.push(arguments)},
+  n.q=[],n.v=2,n.l=1*new Date)})(window,"InstanaEumObject","ineum");
+
+//   ineum('reportingUrl', 'http://a627-instana:2999/');
+  ineum('reportingUrl', 'http://10.255.78.18:2999/');
+  ineum('key', 'RU3yUYh7TuSEELfacfKZ0w');
+  ineum('trackSessions');
+</script>
+<!-- <script defer crossorigin="anonymous" -->
+<!-- 	src="http://a627-instana:2999/eum.min.js"></script> -->
+<script defer crossorigin="anonymous"
+	src="http://10.255.78.18:2999/eum.min.js"></script>
+<title>After</title>
 </head>
 <body>
-<h1>After</h1>
-<h2 th:text="|version: ${version}|"></h2>
-<h2 th:text="|environment: ${environment}|"></h2>
-<img src="../img/after.jpg" alt="after">
+	<h1>After</h1>
+	<h2 th:text="|version: ${version}|"></h2>
+	<h2 th:text="|environment: ${environment}|"></h2>
+	<img src="../img/after.jpg" alt="after">
 </body>
 </html>

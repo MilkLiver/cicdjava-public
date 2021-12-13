@@ -33,12 +33,12 @@ public class MainController {
 	// @Value("${version}")
 	// String version;
 
-	static final String showPage = "before";
-//	static final String showPage = "after";
+//	static final String showPage = "before";
+	static final String showPage = "after";
 
 	private Counter requestCount;
 
-	static String version = "v6.12.6";
+	static String version = "v6.13.0";
 
 //	static String mutateStr = "[{ \"op\": \"add\", \"path\": \"/metadata/labels/foo\", \"value\": \"bar\" }]";
 
@@ -326,6 +326,43 @@ public class MainController {
 		}
 
 		return "randomResponse receive webhook: " + sb.toString();
+	}
+
+	@RequestMapping(value = "/randomResponsePage", method = { RequestMethod.GET, RequestMethod.POST })
+	public String randomResponsePage(HttpServletRequest request, HttpServletResponse response) {
+
+		log.info(request.getServletPath().toString() + " ...");
+
+		int httpStatusCode = randomHttpStatusCode();
+
+		response.setStatus(httpStatusCode);
+		log.info("http status code: " + String.valueOf(httpStatusCode));
+
+		requestCount.labels("randomResponse").inc();
+
+		String line;
+		StringBuilder sb = new StringBuilder();
+		try {
+			while ((line = request.getReader().readLine()) != null) {
+				sb.append(line);
+			}
+
+			if (sb.toString().replace(" ", "").equals("")) {
+				log.error(request.getServletPath().toString() + " not content");
+			}
+			log.info(sb.toString());
+
+			log.info(request.getServletPath().toString() + " finish");
+
+		} catch (IOException e) {
+			log.error(e.getMessage());
+			for (StackTraceElement elem : e.getStackTrace()) {
+				log.error(elem.toString());
+			}
+			log.info(request.getServletPath().toString() + " Error");
+		}
+
+		return "randomHttpStatusCode";
 	}
 
 }
