@@ -38,7 +38,7 @@ public class MainController {
 
 	private Counter requestCount;
 
-	static String version = "v6.13.6";
+	static String version = "v6.13.7";
 
 //	static String mutateStr = "[{ \"op\": \"add\", \"path\": \"/metadata/labels/foo\", \"value\": \"bar\" }]";
 
