@@ -2,6 +2,7 @@ package com.milkliver.deploytest;
 
 import java.io.IOException;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
@@ -9,7 +10,6 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,9 +21,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.Counter;
-import net.sf.json.JSONObject;
 
 @Controller
 public class MainController {
@@ -45,7 +48,7 @@ public class MainController {
 	@Value("${mutate.command}")
 	String mutateCommand;
 
-	static Map statusProbability = new HashedMap();
+	static Map statusProbability = new HashMap();
 
 	@Value("${environment}")
 	String environment;
@@ -83,20 +86,25 @@ public class MainController {
 
 	@ResponseBody
 	@PostMapping(value = { "/mutate" }, produces = "application/json")
-	public String mutate(Model model, HttpServletRequest request, HttpServletResponse response) {
+	public String mutate(Model model, HttpServletRequest request, HttpServletResponse response)
+			throws JsonProcessingException {
 		log.info("mutate ...");
 
 		String encodedString = Base64.getEncoder().encodeToString(mutateCommand.getBytes());
 
-		JSONObject mutateReturnJson = new JSONObject();
-		JSONObject responseJson = new JSONObject();
-		responseJson.put("allowed", true);
-		responseJson.put("patch", encodedString);
-		responseJson.put("patchType", "JSONPatch");
-		mutateReturnJson.put("response", responseJson);
+		ObjectMapper returnJsonOM = new ObjectMapper();
+		String returnJsonStr = "";
+
+		Map mutateReturnJsonMap = new HashMap();
+		Map responseJsonMap = new HashMap();
+		responseJsonMap.put("allowed", true);
+		responseJsonMap.put("patch", encodedString);
+		responseJsonMap.put("patchType", "JSONPatch");
+		mutateReturnJsonMap.put("response", responseJsonMap);
+		returnJsonStr = returnJsonOM.writeValueAsString(mutateReturnJsonMap);
 
 		log.info("mutate finish");
-		return mutateReturnJson.toString();
+		return returnJsonStr;
 	}
 
 	@ResponseBody
@@ -176,6 +184,8 @@ public class MainController {
 	public String instanawebhook(Model model, HttpServletRequest request, HttpServletResponse response) {
 		String line;
 		StringBuilder sb = new StringBuilder();
+		ObjectMapper objectMapper = new ObjectMapper();
+
 		log.info("instanawebhook ...");
 		try {
 			while ((line = request.getReader().readLine()) != null) {
@@ -184,10 +194,13 @@ public class MainController {
 
 			log.info(sb.toString());
 			// 將body裡的內容解析成JSON
-			JSONObject json = JSONObject.fromObject(sb.toString());
-			Map m = (Map) json;
+//			JSONObject json = JSONObject.fromObject(sb.toString());
+//			Map m = (Map) json;
 
-			Map issueMap = new HashedMap((Map) m.get("issue"));
+			Map m = objectMapper.readValue(sb.toString(), new TypeReference<Map>() {
+			});
+
+			Map issueMap = (Map) m.get("issue");
 			log.info("msgid: " + String.valueOf(issueMap.get("text")));
 
 		} catch (Exception e) {
