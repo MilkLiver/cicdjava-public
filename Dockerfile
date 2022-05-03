@@ -18,4 +18,6 @@ WORKDIR /opt/app-root/run
 RUN ["/opt/app-root/run/assemble"]
 # Run script sourced from builder image based on user input or image metadata.
 # If this file does not exist in the image, the build will fail.
-CMD ["/opt/app-root/run/run"]
+ENTRYPOINT ["/opt/app-root/run/run"]
+#CMD ["/opt/app-root/run/run"]
+
