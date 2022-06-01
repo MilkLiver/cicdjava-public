@@ -1,4 +1,4 @@
-package utils;
+package com.milkliver.deploytest.utils;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;

@@ -1,4 +1,4 @@
-package utils;
+package com.milkliver.deploytest.utils;
 
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;

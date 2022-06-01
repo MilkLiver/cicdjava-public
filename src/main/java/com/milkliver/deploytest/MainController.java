@@ -12,18 +12,22 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.milkliver.deploytest.monitoring.TestPrometheusMetrics;
 
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.Counter;
@@ -52,6 +56,21 @@ public class MainController {
 
 	@Value("${environment}")
 	String environment;
+
+	@Autowired
+	TestPrometheusMetrics testPrometheusMetrics;
+
+	@ResponseBody
+	@GetMapping(value = { "/setTestMetric01" })
+	public String setTestMetric01(Model model, HttpServletRequest request, HttpServletResponse response,
+			@RequestParam int value) {
+		log.info("setTestMetric01 value: " + String.valueOf(value) + " ...");
+
+		testPrometheusMetrics.setTestMetric01(value);
+
+		log.info("setTestMetric01 value: " + String.valueOf(value) + " finish");
+		return "setTestMetric01 value: " + String.valueOf(value);
+	}
 
 	public MainController(CollectorRegistry collectorRegistry) {
 		requestCount = Counter.build().name("request_count").help("Number of requests.").labelNames("request_name")

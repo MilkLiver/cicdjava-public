@@ -12,7 +12,7 @@
 	</parent>
 	<groupId>com.milkliver</groupId>
 	<artifactId>deploy-test</artifactId>
-	<version>v6.14.5</version>
+	<version>v6.15.0</version>
 	<packaging>jar</packaging>
 	<name>deploy-test</name>
 	<description>Demo project for Spring Boot</description>
@@ -88,6 +88,14 @@
 			<artifactId>spring-boot-starter-json</artifactId>
 			<version>2.6.2</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/io.micrometer/micrometer-registry-elastic -->
+		<!-- <dependency> -->
+		<!-- <groupId>io.micrometer</groupId> -->
+		<!-- <artifactId>micrometer-registry-elastic</artifactId> -->
+		<!-- <version>1.9.0</version> -->
+		<!-- </dependency> -->
+
 
 	</dependencies>
 
