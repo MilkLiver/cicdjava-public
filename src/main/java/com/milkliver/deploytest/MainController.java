@@ -2,6 +2,7 @@ package com.milkliver.deploytest;
 
 import java.io.IOException;
 import java.util.Base64;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -59,6 +60,23 @@ public class MainController {
 
 	@Autowired
 	TestPrometheusMetrics testPrometheusMetrics;
+
+	@ResponseBody
+	@RequestMapping(value = "/showHeaders", method = { RequestMethod.GET, RequestMethod.POST })
+	public String showHeaders(Model model, HttpServletRequest request, HttpServletResponse response) {
+		log.info("showHeaders ...");
+
+		StringBuilder res = new StringBuilder();
+		Enumeration headerNames = request.getHeaderNames();
+		while (headerNames.hasMoreElements()) {
+			String headerName = String.valueOf(headerNames.nextElement());
+			log.info("header: " + headerName + " value: " + String.valueOf(request.getHeader(headerName)));
+			res.append("header: " + headerName + " value: " + String.valueOf(request.getHeader(headerName)) + "  <br>  ");
+		}
+
+		log.info("showHeaders finish");
+		return res.toString();
+	}
 
 	@ResponseBody
 	@GetMapping(value = { "/setTestMetric01" })
