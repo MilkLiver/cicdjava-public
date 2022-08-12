@@ -18,8 +18,7 @@ USER 0
 RUN mkdir /workdir
 WORKDIR /workdir
 
-ADD ./scdf-task01.jar /workdir/
-ADD ./externalProgramFiles/* /workdir/
+ADD ./*.jar /workdir/
 RUN chmod 777 -Rf /workdir
 
 RUN mkdir /configs
