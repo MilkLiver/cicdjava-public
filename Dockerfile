@@ -30,9 +30,13 @@ RUN chmod 777 -Rf /configs/*
 #========================run scdf========================
 USER 1001
 
-ENTRYPOINT ["/bin/java","-jar","-Dspring.config.location=/configs/application.properties","/workdir/*.jar"]
-#CMD ["/bin/java","-jar","-Dspring.config.location=/configs/execution.properties","/workdir/scdf-task01.jar"]
+ENV PROPERTIES_PATH=/configs/application.properties
+#ENV JARPATH "/workdir/deploy-test.jar"
+
+
+ENTRYPOINT exec ls /workdir/*.jar | xargs -i /bin/java -jar -Dspring.config.location=$PROPERTIES_PATH {}
 
 
 # For Test
+#CMD ["/bin/java","-jar","-Dspring.config.location=/configs/application.properties","/workdir/scdf-task01.jar"]
 #CMD ["tail","-f","/dev/null"]
