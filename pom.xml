@@ -12,7 +12,7 @@
 	</parent>
 	<groupId>com.milkliver</groupId>
 	<artifactId>deploy-test</artifactId>
-	<version>v6.16.1</version>
+	<version>v6.16.2</version>
 	<packaging>jar</packaging>
 	<name>deploy-test</name>
 	<description>Demo project for Spring Boot</description>
@@ -89,6 +89,14 @@
 			<!-- <version>2.6.2</version> -->
 			<version>2.7.2</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.13.3</version>
+		</dependency>
+
 
 		<!-- https://mvnrepository.com/artifact/io.micrometer/micrometer-registry-elastic -->
 		<!-- <dependency> -->
