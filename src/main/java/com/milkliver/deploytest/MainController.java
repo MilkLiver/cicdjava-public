@@ -1,6 +1,11 @@
 package com.milkliver.deploytest;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Base64;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -15,10 +20,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,6 +36,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.milkliver.deploytest.monitoring.TestPrometheusMetrics;
+import com.milkliver.deploytest.simulator.SleepFunction;
 
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.Counter;
@@ -61,6 +69,69 @@ public class MainController {
 	@Autowired
 	TestPrometheusMetrics testPrometheusMetrics;
 
+	@Autowired
+	SleepFunction sleepFunction;
+
+	@ResponseBody
+	@RequestMapping(value = "/testDownload01/{fileName}", method = { RequestMethod.GET, RequestMethod.POST })
+	public String testDownload01(Model model, HttpServletRequest request, HttpServletResponse response,
+			@PathVariable("fileName") String fileName) {
+		log.info(this.getClass().getName() + " download file: " + fileName + " ...");
+
+		File file = null;
+
+		try {
+			file = new ClassPathResource("static/img/" + fileName + ".jpg").getFile();
+
+			response.reset();
+			response.setContentType("application/octet-stream");
+			response.setCharacterEncoding("utf-8");
+			response.setContentLength((int) file.length());
+			response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".jpg");
+			try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));) {
+				byte[] buff = new byte[1024];
+				OutputStream os = response.getOutputStream();
+				int i = 0;
+				while ((i = bis.read(buff)) != -1) {
+					os.write(buff, 0, i);
+					os.flush();
+				}
+			} catch (Exception e) {
+				log.error(e.getMessage());
+				for (StackTraceElement elem : e.getStackTrace()) {
+					log.error(elem.toString());
+				}
+				return "download file: " + fileName + " error";
+			}
+		} catch (FileNotFoundException e) {
+			log.error(e.getMessage());
+			for (StackTraceElement elem : e.getStackTrace()) {
+				log.error(elem.toString());
+			}
+			return e.getMessage();
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			for (StackTraceElement elem : e.getStackTrace()) {
+				log.error(elem.toString());
+			}
+		}
+
+		log.info(this.getClass().getName() + " download file: " + fileName + " finish");
+		return "download file: " + fileName + " finish";
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/sleep/{sleepTime}", method = { RequestMethod.GET, RequestMethod.POST })
+	public String sleep(Model model, HttpServletRequest request, HttpServletResponse response,
+			@PathVariable("sleepTime") int sleepTime) {
+		log.info(this.getClass().getName() + " sleep " + String.valueOf(sleepTime) + " seconds ...");
+
+		sleepFunction.sleep(sleepTime);
+
+		log.info(this.getClass().getName() + " sleep " + String.valueOf(sleepTime) + " seconds finish");
+		return "sleep " + String.valueOf(sleepTime) + " seconds finish";
+	}
+
 	@ResponseBody
 	@RequestMapping(value = "/showHeaders", method = { RequestMethod.GET, RequestMethod.POST })
 	public String showHeaders(Model model, HttpServletRequest request, HttpServletResponse response) {
@@ -71,7 +142,8 @@ public class MainController {
 		while (headerNames.hasMoreElements()) {
 			String headerName = String.valueOf(headerNames.nextElement());
 			log.info("header: " + headerName + " value: " + String.valueOf(request.getHeader(headerName)));
-			res.append("header: " + headerName + " value: " + String.valueOf(request.getHeader(headerName)) + "  <br>  ");
+			res.append(
+					"header: " + headerName + " value: " + String.valueOf(request.getHeader(headerName)) + "  <br>  ");
 		}
 
 		log.info("showHeaders finish");
