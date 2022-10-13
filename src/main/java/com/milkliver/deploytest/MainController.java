@@ -76,6 +76,9 @@ public class MainController {
 	@RequestMapping(value = "/testDownload01/{fileName}", method = { RequestMethod.GET, RequestMethod.POST })
 	public String testDownload01(Model model, HttpServletRequest request, HttpServletResponse response,
 			@PathVariable("fileName") String fileName) {
+
+		log.info(this.getClass().getName() + " " + Thread.currentThread().getStackTrace()[1].getMethodName() + " ...");
+
 		log.info(this.getClass().getName() + " download file: " + fileName + " ...");
 
 		File file = null;
@@ -117,6 +120,8 @@ public class MainController {
 		}
 
 		log.info(this.getClass().getName() + " download file: " + fileName + " finish");
+		log.info(this.getClass().getName() + " " + Thread.currentThread().getStackTrace()[1].getMethodName()
+				+ " finish");
 		return "download file: " + fileName + " finish";
 	}
 
