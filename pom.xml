@@ -12,12 +12,14 @@
 	</parent>
 	<groupId>com.milkliver</groupId>
 	<artifactId>deploy-test</artifactId>
-	<version>v6.17.0</version>
+	<version>v7.0.0</version>
 	<packaging>jar</packaging>
 	<name>deploy-test</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>1.8</java.version>
+		<native.maven.plugin.version>0.9.14</native.maven.plugin.version>
+		<mainClass>com.milkliver.deploytest.DeployTestApplication</mainClass>
 	</properties>
 	<repositories>
 		<repository>
@@ -107,6 +109,41 @@
 
 
 	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>native</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.graalvm.buildtools</groupId>
+						<artifactId>native-maven-plugin</artifactId>
+						<version>${native.maven.plugin.version}</version>
+						<extensions>true</extensions>
+						<executions>
+							<execution>
+								<id>build-native</id>
+								<goals>
+									<goal>compile-no-fork</goal>
+								</goals>
+								<phase>package</phase>
+							</execution>
+							<execution>
+								<id>test-native</id>
+								<goals>
+									<goal>test</goal>
+								</goals>
+								<phase>test</phase>
+							</execution>
+						</executions>
+						<configuration>
+							<!-- ... -->
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 	<build>
 		<finalName>deploy-test</finalName>
