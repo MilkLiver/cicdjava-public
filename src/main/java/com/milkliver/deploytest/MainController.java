@@ -172,32 +172,6 @@ public class MainController {
 				.register(collectorRegistry);
 	}
 
-	public int randomHttpStatusCode() {
-		Random random = new Random();
-		float randomFloat = random.nextFloat();
-
-		// HTTP 500
-		if (randomFloat >= 0 && randomFloat < 0.05) {
-			return 500;
-		}
-		// HTTP 400
-		else if (randomFloat >= 0.05 && randomFloat < 0.15) {
-			return 400;
-		}
-		// HTTP 300
-		else if (randomFloat >= 0.15 && randomFloat < 0.3) {
-			return 300;
-		}
-		// HTTP 100
-		// else if (randomFloat >= 0.3 && randomFloat < 0.5) {
-		// return 100;
-		// }
-		// HTTP 200
-		else {
-			return 200;
-		}
-	}
-
 	@ResponseBody
 	@PostMapping(value = { "/mutate" }, produces = "application/json")
 	public String mutate(Model model, HttpServletRequest request, HttpServletResponse response)
@@ -432,19 +406,10 @@ public class MainController {
 		String line;
 		StringBuilder sb = new StringBuilder();
 		try {
-			while ((line = request.getReader().readLine()) != null) {
-				sb.append(line);
-			}
-
-			if (sb.toString().replace(" ", "").equals("")) {
-				log.error(request.getServletPath().toString() + " not content");
-				return "meow?";
-			}
-			log.info(sb.toString());
 
 			log.info(request.getServletPath().toString() + " finish");
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			log.error(e.getMessage());
 			for (StackTraceElement elem : e.getStackTrace()) {
 				log.error(elem.toString());
@@ -452,7 +417,7 @@ public class MainController {
 			log.info(request.getServletPath().toString() + " Error");
 		}
 
-		return "randomResponse receive webhook: " + sb.toString();
+		return "randomResponse http status Code: " + String.valueOf(httpStatusCode);
 	}
 
 	@RequestMapping(value = "/randomResponsePage", method = { RequestMethod.GET, RequestMethod.POST })
@@ -490,6 +455,103 @@ public class MainController {
 		}
 
 		return "randomHttpStatusCode";
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/randomLatency", method = { RequestMethod.GET, RequestMethod.POST })
+	public String randomLatency(HttpServletRequest request, HttpServletResponse response) {
+
+		log.info(this.getClass().getName() + "." + Thread.currentThread().getStackTrace()[1].getMethodName() + " "
+				+ request.getServletPath().toString() + " ...");
+
+		int httpTimeout = randomHttpLatency();
+
+		log.info("http latency: " + String.valueOf(httpTimeout));
+
+		requestCount.labels("randomLatency").inc();
+
+		String line;
+		StringBuilder sb = new StringBuilder();
+		try {
+
+			Thread.sleep(httpTimeout);
+
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			for (StackTraceElement elem : e.getStackTrace()) {
+				log.error(elem.toString());
+			}
+			log.info(request.getServletPath().toString() + " Error");
+		}
+		log.info(this.getClass().getName() + "." + Thread.currentThread().getStackTrace()[1].getMethodName() + " "
+				+ request.getServletPath().toString() + " finish");
+		return "randomLatency http latency: " + String.valueOf(httpTimeout);
+	}
+
+	@PostConstruct
+	public int randomHttpLatency() {
+
+		int L1Min = 10;
+		int L1Max = 100;
+
+		int L2Min = 100;
+		int L2Max = 200;
+
+		int L3Min = 200;
+		int L3Max = 750;
+
+		int L4Min = 750;
+		int L4Max = 2000;
+
+		Random randoI = new Random();
+		Random randomF = new Random();
+
+		float randomFloat = randomF.nextFloat();
+
+		// ======================================================
+		if (randomFloat >= 0 && randomFloat < 0.05) {
+			return randoI.nextInt((L4Max - L4Min) + 1) + L4Min;
+		}
+		// ------------------------------------------------------
+		else if (randomFloat >= 0.05 && randomFloat < 0.15) {
+			return randoI.nextInt((L3Max - L3Min) + 1) + L3Min;
+		}
+		// ------------------------------------------------------
+		else if (randomFloat >= 0.15 && randomFloat < 0.3) {
+			return randoI.nextInt((L2Max - L2Min) + 1) + L2Min;
+		}
+		// ------------------------------------------------------
+		else {
+			return randoI.nextInt((L1Max - L1Min) + 1) + L1Min;
+		}
+		// ======================================================
+
+	}
+
+	public int randomHttpStatusCode() {
+		Random random = new Random();
+		float randomFloat = random.nextFloat();
+
+		// HTTP 500
+		if (randomFloat >= 0 && randomFloat < 0.05) {
+			return 500;
+		}
+		// HTTP 400
+		else if (randomFloat >= 0.05 && randomFloat < 0.15) {
+			return 400;
+		}
+		// HTTP 300
+		else if (randomFloat >= 0.15 && randomFloat < 0.3) {
+			return 300;
+		}
+		// HTTP 100
+		// else if (randomFloat >= 0.3 && randomFloat < 0.5) {
+		// return 100;
+		// }
+		// HTTP 200
+		else {
+			return 200;
+		}
 	}
 
 }
