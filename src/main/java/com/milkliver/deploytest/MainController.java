@@ -50,13 +50,14 @@ public class MainController {
 	// String version;
 
 	static final String showPage = "before";
-//	static final String showPage = "after";
+	// static final String showPage = "after";
 
 	private Counter requestCount;
 
 	static String version = "v6.18.2";
 
-//	static String mutateStr = "[{ \"op\": \"add\", \"path\": \"/metadata/labels/foo\", \"value\": \"bar\" }]";
+	// static String mutateStr = "[{ \"op\": \"add\", \"path\":
+	// \"/metadata/labels/foo\", \"value\": \"bar\" }]";
 
 	@Value("${mutate.command}")
 	String mutateCommand;
@@ -196,6 +197,36 @@ public class MainController {
 	}
 
 	@ResponseBody
+	@GetMapping(value = { "/prometheus/test/counter/inc" })
+	public String prometheusTestCounterInc(Model model, HttpServletRequest request, HttpServletResponse response,
+			@RequestParam(value = "lable", required = false) String lable) {
+		log.info("prometheusTestCounterInc ...");
+		if ("".equals(lable.trim())) {
+			requestCount.labels("test").inc();
+			return "label: test inc";
+		} else {
+			requestCount.labels(lable).inc();
+			return "label: " + labels + " inc";
+		}
+		log.info("prometheusTestCounterInc finish");
+	}
+
+	@ResponseBody
+	@GetMapping(value = { "/prometheus/test/counter/reset" })
+	public String prometheusTestCounterReset(Model model, HttpServletRequest request, HttpServletResponse response,
+			@RequestParam(value = "lable", required = false) String lable) {
+		log.info("prometheusTestCounterInc ...");
+		if ("".equals(lable.trim())) {
+			requestCount.labels("test").reset();
+			return "label: test reset";
+		} else {
+			requestCount.labels(lable).reset();
+			return "label: " + labels + " reset";
+		}
+		log.info("prometheusTestCounterInc finish");
+	}
+
+	@ResponseBody
 	@GetMapping(value = { "/nyahello" })
 	public String nyahello(Model model, HttpServletRequest request, HttpServletResponse response) {
 		log.info("nyahello ...");
@@ -282,8 +313,8 @@ public class MainController {
 
 			log.info(sb.toString());
 			// 將body裡的內容解析成JSON
-//			JSONObject json = JSONObject.fromObject(sb.toString());
-//			Map m = (Map) json;
+			// JSONObject json = JSONObject.fromObject(sb.toString());
+			// Map m = (Map) json;
 
 			Map m = objectMapper.readValue(sb.toString(), new TypeReference<Map>() {
 			});
@@ -301,7 +332,7 @@ public class MainController {
 		return sb.toString();
 	}
 
-//	@ResponseBody
+	// @ResponseBody
 	@GetMapping(value = { "/" })
 	public String home(Model model, HttpServletRequest request, HttpServletResponse response) {
 		model.addAttribute("environment", environment);
