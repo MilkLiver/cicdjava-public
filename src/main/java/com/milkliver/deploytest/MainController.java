@@ -53,6 +53,8 @@ public class MainController {
 	// static final String showPage = "after";
 
 	private Counter requestCount;
+	private Counter counter01;
+	private Counter counter02;
 
 	static String version = "v6.18.2";
 
@@ -72,6 +74,18 @@ public class MainController {
 
 	@Autowired
 	SleepFunction sleepFunction;
+
+	public MainController(CollectorRegistry collectorRegistry) {
+		requestCount = Counter.build().name("request_count").help("Number of requests.").labelNames("request_name")
+				.register(collectorRegistry);
+
+		counter01 = Counter.build().name("test_count01").help("Test for counter, Counter01, Number of requests.")
+				.labelNames("request_name").register(collectorRegistry);
+
+		counter02 = Counter.build().name("test_count02").help("Test for counter, Counter02, Number of requests.")
+				.labelNames("request_name").register(collectorRegistry);
+
+	}
 
 	@ResponseBody
 	@RequestMapping(value = "/testDownload01/{fileName}", method = { RequestMethod.GET, RequestMethod.POST })
@@ -168,11 +182,6 @@ public class MainController {
 		return "setTestMetric01 value: " + String.valueOf(value);
 	}
 
-	public MainController(CollectorRegistry collectorRegistry) {
-		requestCount = Counter.build().name("request_count").help("Number of requests.").labelNames("request_name")
-				.register(collectorRegistry);
-	}
-
 	@ResponseBody
 	@PostMapping(value = { "/mutate" }, produces = "application/json")
 	public String mutate(Model model, HttpServletRequest request, HttpServletResponse response)
@@ -196,34 +205,96 @@ public class MainController {
 		return returnJsonStr;
 	}
 
+//	============================= Prometheus Test Counter01 ============================= 
+
 	@ResponseBody
-	@GetMapping(value = { "/prometheus/test/counter/inc" })
-	public String prometheusTestCounterInc(Model model, HttpServletRequest request, HttpServletResponse response,
-			@RequestParam(value = "lable", required = false) String lable) {
-		log.info("prometheusTestCounterInc ...");
-		if ("".equals(lable.trim())) {
-			requestCount.labels("test").inc();
-			return "label: test inc";
+	@GetMapping(value = { "/prometheus/test/counter01/inc" })
+	public String prometheusTestCounter01Inc(Model model, HttpServletRequest request, HttpServletResponse response,
+			@RequestParam(value = "label", required = false) String label) {
+
+		log.info("prometheusTestCounter01Inc ...");
+
+		String defaultLabelName = "test";
+		String finalLabelName = defaultLabelName;
+
+		if (label == null || "".equals(label.trim())) {
+			finalLabelName = defaultLabelName;
 		} else {
-			requestCount.labels(lable).inc();
-			return "label: " + labels + " inc";
+			finalLabelName = label;
 		}
-		log.info("prometheusTestCounterInc finish");
+		counter01.labels(finalLabelName).inc();
+
+		log.info("prometheusTestCounter01Inc finish");
+
+		return "Counter01 label: " + finalLabelName + " inc";
 	}
 
 	@ResponseBody
-	@GetMapping(value = { "/prometheus/test/counter/reset" })
-	public String prometheusTestCounterReset(Model model, HttpServletRequest request, HttpServletResponse response,
-			@RequestParam(value = "lable", required = false) String lable) {
-		log.info("prometheusTestCounterInc ...");
-		if ("".equals(lable.trim())) {
-			requestCount.labels("test").reset();
-			return "label: test reset";
+	@GetMapping(value = { "/prometheus/test/counter01/remove" })
+	public String prometheusTestCounter01Remove(Model model, HttpServletRequest request, HttpServletResponse response,
+			@RequestParam(value = "label", required = false) String label) {
+
+		log.info("prometheusTestCounter01Remove ...");
+
+		String defaultLabelName = "test";
+		String finalLabelName = defaultLabelName;
+
+		if (label == null || "".equals(label.trim())) {
+			finalLabelName = defaultLabelName;
 		} else {
-			requestCount.labels(lable).reset();
-			return "label: " + labels + " reset";
+			finalLabelName = label;
 		}
-		log.info("prometheusTestCounterInc finish");
+		counter01.remove(finalLabelName);
+
+		log.info("prometheusTestCounter01Remove finish");
+
+		return "Counter01 label: " + finalLabelName + " remove";
+	}
+
+//	============================= Prometheus Test Counter02 ============================= 
+
+	@ResponseBody
+	@GetMapping(value = { "/prometheus/test/counter02/inc" })
+	public String prometheusTestCounter02Inc(Model model, HttpServletRequest request, HttpServletResponse response,
+			@RequestParam(value = "label", required = false) String label) {
+
+		log.info("prometheusTestCounter02Inc ...");
+
+		String defaultLabelName = "test";
+		String finalLabelName = defaultLabelName;
+
+		if (label == null || "".equals(label.trim())) {
+			finalLabelName = defaultLabelName;
+		} else {
+			finalLabelName = label;
+		}
+		counter02.labels(finalLabelName).inc();
+
+		log.info("prometheusTestCounter02Inc finish");
+
+		return "Counter02 label: " + finalLabelName + " inc";
+	}
+
+	@ResponseBody
+	@GetMapping(value = { "/prometheus/test/counter02/remove" })
+	public String prometheusTestCounter02Remove(Model model, HttpServletRequest request, HttpServletResponse response,
+			@RequestParam(value = "label", required = false) String label) {
+
+		log.info("prometheusTestCounter02Remove ...");
+
+		String defaultLabelName = "test";
+		String finalLabelName = defaultLabelName;
+
+		if (label == null || "".equals(label.trim())) {
+			finalLabelName = defaultLabelName;
+		} else {
+			finalLabelName = label;
+		}
+		counter02.remove(finalLabelName);
+
+		log.info("prometheusTestCounter02Remove finish");
+
+		return "Counter02 label: " + finalLabelName + " remove";
 	}
 
 	@ResponseBody
