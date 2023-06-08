@@ -1,42 +1,59 @@
-FROM registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift
+#======================== build container ========================
+FROM docker.io/maven:3.9.2-eclipse-temurin-11 AS builder
 
 MAINTAINER milkliver
 #ARG uid=0
 #ARG gid=0
 USER 0
 
-#========================install rpms========================
+
+
+#======================== add configs and jar ========================
+RUN mkdir /workdir
+WORKDIR /workdir
+
+COPY ./src /workdir/src
+COPY ./pom.xml /workdir/
+
+RUN mvn clean package -DskipTests
+
+
+#======================== runtime container ========================
+FROM docker.io/library/rockylinux:8
+
+MAINTAINER milkliver
+
+ENV PROPERTIES_PATH=/workdir/configs/application.properties
+
+
+#======================== yum install ========================
+RUN yum -y install findutils
+RUN yum -y install java
+
+
+#======================== rpms install ========================
 #RUN mkdir /rpms
 #WORKDIR /rpms
 #ADD ./rpms /rpms
 #RUN rpm -ivh --nodigest --nofiledigest /rpms/*
-
 #RUN java -version
 
 
-#========================add scdf executor and jobs========================
-RUN mkdir /workdir
+#======================== configure environment ========================
+RUN mkdir -p /workdir
+RUN mkdir -p /workdir/configs
+
 WORKDIR /workdir
 
-ADD ./*.jar /workdir/
+COPY --from=builder /workdir/target/*.jar /workdir/
+COPY --from=builder /workdir/src/main/resources/*.properties /workdir/configs/
+
 RUN chmod 777 -Rf /workdir
-
-RUN mkdir /configs
-ADD ./*.properties /configs/
-RUN chmod 777 -Rf /configs/*
+RUN chmod 744 -Rf /workdir/configs/*
 
 
-
-#========================run scdf========================
-USER 1001
-
-ENV PROPERTIES_PATH=/configs/application.properties
-#ENV JARPATH "/workdir/deploy-test.jar"
-
+#======================== run ========================
+USER 1000
 
 ENTRYPOINT exec ls /workdir/*.jar | xargs -i /bin/java -jar -Dspring.config.location=$PROPERTIES_PATH {}
 
-
-# For Test
-#CMD ["/bin/java","-jar","-Dspring.config.location=/configs/application.properties","/workdir/scdf-task01.jar"]
-#CMD ["tail","-f","/dev/null"]
