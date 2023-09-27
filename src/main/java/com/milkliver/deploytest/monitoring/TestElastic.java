@@ -1,10 +1,6 @@
 package com.milkliver.deploytest.monitoring;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.lang.Nullable;
-
-import io.micrometer.core.instrument.MeterRegistry;
-//import io.micrometer.elastic.ElasticConfig;
 
 @Configuration
 public class TestElastic {

@@ -21,7 +21,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.stereotype.Component;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,6 +39,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.milkliver.deploytest.files.FileDownloadUtil;
+import com.milkliver.deploytest.files.FileTest;
 import com.milkliver.deploytest.monitoring.TestPrometheusMetrics;
 import com.milkliver.deploytest.simulator.SleepFunction;
 
@@ -70,10 +76,16 @@ public class MainController {
 	String environment;
 
 	@Autowired
+	FileTest fileTest;
+
+	@Autowired
 	TestPrometheusMetrics testPrometheusMetrics;
 
 	@Autowired
 	SleepFunction sleepFunction;
+
+	@Autowired
+	FileDownloadUtil fileDownloadUtil;
 
 	public MainController(CollectorRegistry collectorRegistry) {
 		requestCount = Counter.build().name("request_count").help("Number of requests.").labelNames("request_name")
@@ -85,6 +97,42 @@ public class MainController {
 		counter02 = Counter.build().name("test_count02").help("Test for counter, Counter02, Number of requests.")
 				.labelNames("request_name").register(collectorRegistry);
 
+	}
+
+//	@GetMapping("/downloadFile/{fileCode}")
+	@ResponseBody
+	@RequestMapping(value = "/downloadFile/{fileCode}")
+	public ResponseEntity<?> downloadFile(@PathVariable("fileCode") String fileCode) {
+		log.info("fileCode: " + fileCode);
+
+		Resource resource = null;
+		try {
+			resource = fileDownloadUtil.getFileAsResource(fileCode);
+		} catch (IOException e) {
+			return ResponseEntity.internalServerError().build();
+		}
+
+		if (resource == null) {
+			return new ResponseEntity<>("File not found", HttpStatus.NOT_FOUND);
+		}
+
+		String contentType = "application/octet-stream";
+		String headerValue = "attachment; filename=\"" + resource.getFilename() + "\"";
+
+		return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
+				.header("Last-Modified", "Sun, 21 Jan 2018 01:02:03 GMT").header(HttpHeaders.CONTENT_DISPOSITION, headerValue).body(resource);
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/downloadRawFile/{filename}", method = { RequestMethod.GET, RequestMethod.POST })
+	public String downloadRawFile(Model model, HttpServletRequest request, HttpServletResponse response,
+			@PathVariable("filename") String filename) {
+		log.info(this.getClass().getName() + " downloadRawFile " + filename + " ...");
+
+		fileTest.downloadFilesWithRawData(filename);
+
+		log.info(this.getClass().getName() + " downloadRawFile " + filename + " finish");
+		return "downloadRawFile " + filename + " finish";
 	}
 
 	@ResponseBody

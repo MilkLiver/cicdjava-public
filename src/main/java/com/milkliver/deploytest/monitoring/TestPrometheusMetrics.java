@@ -2,7 +2,6 @@ package com.milkliver.deploytest.monitoring;
 
 import javax.annotation.PostConstruct;
 
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import io.prometheus.client.CollectorRegistry;
