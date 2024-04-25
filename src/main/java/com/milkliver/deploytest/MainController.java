@@ -1,10 +1,12 @@
 package com.milkliver.deploytest;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.Base64;
 import java.util.Enumeration;
@@ -228,6 +230,56 @@ public class MainController {
 
 		log.info("setTestMetric01 value: " + String.valueOf(value) + " finish");
 		return "setTestMetric01 value: " + String.valueOf(value);
+	}
+
+	@ResponseBody
+	@PostMapping(value = { "/command" })
+	public String command(Model model, HttpServletRequest request, HttpServletResponse response)
+			throws JsonProcessingException {
+		log.info("command ...");
+
+		Process process;
+		StringBuilder execRes = new StringBuilder();
+		try {
+			// read exec command from body ===================================
+			String execLine;
+			StringBuilder execStrSb = new StringBuilder();
+			while ((execLine = request.getReader().readLine()) != null) {
+				execStrSb.append(execLine);
+			}
+			if (execStrSb.toString().replace(" ", "").equals("")) {
+				log.error("no input command");
+				execRes.append("no input command");
+			} else {
+				// exec command ===================================
+
+				process = Runtime.getRuntime().exec(execStrSb.toString());
+				BufferedReader processInputBuffer = new BufferedReader(new InputStreamReader(process.getInputStream()));
+				BufferedReader processErrorInputBuffer = new BufferedReader(
+						new InputStreamReader(process.getErrorStream()));
+				String execReturnLine = null;
+
+				while ((execReturnLine = processErrorInputBuffer.readLine()) != null) {
+					execRes.append(execReturnLine);
+					log.info(execReturnLine);
+				}
+
+				while ((execReturnLine = processInputBuffer.readLine()) != null) {
+					execRes.append(execReturnLine);
+					log.info(execReturnLine);
+				}
+
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			for (StackTraceElement elem : e.getStackTrace()) {
+				log.error(elem.toString());
+			}
+		}
+
+		log.info("command finish");
+		return execRes.toString();
+//		return returnJsonStr;
 	}
 
 	@ResponseBody
